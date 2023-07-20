@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login{% endblock title %}
+{% block content %}
+<section id="recent-blog-posts" class="recent-blog-posts">
+    <div class="container">
+        {% if messages %}
+            <div class="alert alert-danger" >
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" required class="form-control" name="username" id="username">
+                    </div>
+                </div>
+                <div class="col-md-12"> 
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password" id="password">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+            <a href="{% url 'register' %}" class="btn btn-secondary">Register</a>
+        </form>
+    </div>
+</section>
+{% endblock content %}
+

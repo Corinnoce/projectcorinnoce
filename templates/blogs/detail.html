@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}{{article.title}}{% endblock title %}
+{% block content %}
+    <!-- ======= Blog Details Section ======= -->
+    <section id="blog" class="blog">
+      <div class="container" data-aos="fade-up">
+        <div class="row g-5">
+          <div class="col-lg-8">
+
+            <article class="blog-details">
+
+              {% if article.thumbnail %}
+                <div class="post-img">
+                  <img class="img-fluid"  src="{{article.thumbnail.url }}" alt="{{article.title}}">
+                </div>
+              {% else %}
+                <div class="post-img"><img height="350" src="{{article.categorie.image.url}}" alt=""></div>
+              {% endif %}
+
+              <h2 class="title">{{article.title}}</h2>
+
+              <div class="meta-top">
+                <ul>
+                    <li class="d-block">
+                      <i class="bi bi-person"></i>
+                      <a href="#">{{article.author}}</a>
+                    </li>
+                    <li class="d-block">
+                      <i class="bi bi-clock"></i>
+                      <time datetime="2020-01-01">{{article.created_at}}</time>
+                    </li>
+                    <li class="d-block">
+                      <i class="bi bi-chat-dots"></i> 
+                      <a href="#comments">{{comments.count}} Comments</a>
+                    </li>
+                    {% if request.user.is_authenticated %}
+                    <li class="d-block">
+                      <i class="bi bi-chat-dots"></i>
+                      <a href="{% url 'views-collection' %}?slug={{article.slug}}">Add my collection</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                {% if article.File %}
+                  <a href="{{article.File.url}}" download='true' class="btn mt-1 text-white fw-bold btn-secondary btn-lg ">Download</a>
+                {% endif %}
+                
+              </div><!-- End meta top -->
+
+              <div class="content">
+                <p>
+                  {{article.description}}
+                </p>
+                <div class="text-muted h4">A découvrir</div>
+                <hr>
+                <div class="row">
+                  {% for affilate in  affilates %}
+                    <div class="col-md-4">
+                        <div class="text-muted text-small mb-1">{{affilate.about}}</div>
+                        <a href="{{affilate.url}}" class="btn btn-primary">{{affilate.name}}</a>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div><!-- End post content -->
+
+              {% for article in article_detail %}
+                <article class="">
+                  {% if article.thumbnail %}
+                    <div class="post-img"><img height="350" src="{{ article.thumbnail.url }}" alt=""></div>
+                  {% endif %}
+                  <h3 class="title">{{article.title}}</h3>
+                  <div class="content">
+                    <p>
+                      {{article.description}}
+                    </p>
+                  </div><!-- End post content -->
+                </article><!-- End sublog post -->
+              {% endfor %}
+              {% if article_folio %}
+              <section id="portfolio" class="portfolio" data-aos="fade-up">
+                <div class="row g-0 portfolio-container portfolio-isotope">
+                  <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order">
+                    {% for  folio in article_folio %}
+                      <div class="col-xl-3 col-lg-4 col-md-6 portfolio-item filter-product">
+                        <img src="{{folio.image.url}}" class="img-fluid" alt="">
+                        <div class="portfolio-info">
+                          <h4>{{folio.name}}</h4>
+                          <a href="{{folio.image.url}}" title="{{folio.name}}" data-gallery="portfolio-gallery" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                          <a href="#" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                        </div>
+                      </div><!-- End Portfolio Item -->
+                    {% endfor %}
+                  </div>
+                </div>
+              </section>
+              {% endif %}
+            </article><!-- End blog post -->
+            <div class="post-author mt-4 d-flex align-items-center">
+              {% if article.author.profil %}
+                <img src="{{article.author.profil.url}}" class="rounded-circle flex-shrink-0" alt="">
+              {% else %}
+                <img src="{{article.author.profil.url}}" class="rounded-circle flex-shrink-0" alt="">
+              {% endif %}
+              <div>
+                <h4>{{article.author.name}}</h4>
+                <div class="social-links">
+                  {% if article.author.facebook %}
+                    <a href="{{article.author.facebook}}"><i class="bi bi-facebook"></i></a>
+                  {% endif %}
+                  {% if article.author.discord %}
+                    <a href="{{article.author.discord}}"><i class="bi bi-discord"></i></a>
+                  {% endif %}
+                  {% if article.author.telegram %}
+                  <a href="{{article.author.telegram}}"><i class="biu bi-telegram"></i></a>
+                  {% endif %}
+                </div>
+                <p>{{article.author.description}}</p>
+              </div>
+              <div id="comments"></div>
+            </div><!-- End post author -->
+            <div class="comments">
+              {% for comment  in comments %}
+              <div id="comment-1" class="comment">
+                <div class="d-flex">
+                  <div class="comment-img" ><img src="{% static 'assets/img/blog/comments-1.jpg'%}" class="rounded-circle flex-shrink-0" alt=""></div>
+                  <div>
+                    <h5><a href="">{{comment.name}}</a></h5>
+                    <time datetime="2020-01-01">{{comment.created_at}}</time>
+                    <p>
+                      {{comment.content}}
+                    </p>
+                  </div>
+                </div>
+              </div><!-- End comment #1 -->
+              {% endfor %}
+
+              <div class="reply-form">
+
+                <h4>Leave a Reply</h4>
+                <p>Your email address will not be published. Required fields are marked * </p>
+                <form action="{% url 'postcomment' %}" method="POST">
+                  {% csrf_token %}
+                  <input type="text" required hidden name="slug" value="{{article.slug}}" >
+                  <div class="row">
+                    {% if not request.user.is_authenticated %}
+                    <div class="col-md-6 form-group">
+                      <input name="name" minlength="5" required type="text" class="form-control" placeholder="Your Name*">
+                    </div>
+                    <div class="col-md-6 form-group">
+                      <input name="email" minlength="7" required type="email" class="form-control" placeholder="Your Email*">
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="row">
+                    <div class="col form-group">
+                      <textarea name="comment" minlength="2" required class="form-control" placeholder="Your Comment*"></textarea>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Post Comment</button>
+
+                </form>
+              </div>
+            </div><!-- End blog comments -->
+          </div>
+
+          <div class="col-lg-4">
+
+            <div class="sidebar">
+
+              <div class="sidebar-item search-form">
+                <h3 class="sidebar-title">Search</h3>
+                <form  action="{% url 'blogs' %}" class="mt-3">
+                  <input name="article" placeholder="Search here" type="text">
+                  <button type="submit"><i class="bi bi-search"></i></button>
+                </form>
+              </div><!-- End sidebar search formn-->
+
+              <div class="sidebar-item categories">
+                <h3 class="sidebar-title">Categories</h3>
+                <ul class="mt-3">
+                  {% for categorie in categories %}
+                  <li><a href="{% url 'blogs' %}?categorie={{categorie.slug}}">{{categorie.name}}</a></li>
+                  {% endfor %}
+                </ul>
+              </div><!-- End sidebar categories-->
+
+              <div class="sidebar-item recent-posts">
+                <h3 class="sidebar-title mb-1">Articles associées</h3>
+                  {% for articlelk in article_link %}
+                  <div class="post-item">
+                    <div class="comment-img">
+                      {% if articlelk.thumbnail %}
+                        <img src="{{ articlelk.thumbnail.url }}" alt="">
+                      {% else %}
+                        <img src="{{articlelk.categorie.image.url}}" alt="">
+                      {% endif %}
+                    </div>
+                    <div>
+                      <h4><a href="{% url 'detail' slug=articlelk.slug  %}">{{articlelk.title}}</a></h4>
+                      <time datetime="2020-01-01">{{articlelk.created_at}}</time>
+                    </div>
+                  </div><!-- End recent post item-->
+                  {% endfor %}
+              </div><!-- End sidebar recent posts-->
+
+              <div class="sidebar-item tags">
+                <h3 class="sidebar-title">Tags</h3>
+                <ul class="mt-3">
+                  {% for tag in tags %}
+                  <li><a href="{% url 'blogs' %}?tag={{tag.name}}">{{tag.name}}</a></li>
+                  {% endfor %}
+                </ul>
+              </div><!-- End sidebar tags-->
+
+            </div><!-- End Blog Sidebar -->
+
+          </div>
+        </div>
+      </div>
+    </section><!-- End Blog Details Section -->
+{% endblock %}

@@ -1,0 +1,1 @@
+web: gunicorn CryptoEarn.wsgi --log-file -

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container">
+        <div class="col-md-6 mx-auto">
+            <div class="display-3 fw-bold ">
+                Page not found
+            </div>
+            <a class="btn btn-primary btn-lg" href="{% url 'index' %}">Go to home page</a>
+        </div>
+    </div>
+{% endblock content %}

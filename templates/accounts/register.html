@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Register{% endblock title %}
+{% block content %}
+    <section id="recent-blog-posts" class="recent-blog-posts">
+        <div class="container">
+            {% if messages %}
+                <div class="alert alert-danger" >
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="row mb-2">
+                    <div class="form-group mb-2">
+                        <label for="username" class="form-label">Nom d'utilisateur</label>
+                        <input type="text" required minlength="5" class="form-control" name="username" id="username">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-2">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="text" class="form-control" name="password" id="password">
+                        </div>
+                    </div>
+                    <div class="col-md-6"> 
+                        <div class="form-group mb-2">
+                            <label for="firstname" class="form-label">Firstname</label>
+                            <input type="text" class="form-control" name="firstname" id="firstname">
+                        </div>
+                    </div>
+                    <div class="col-md-6"> 
+                        <div class="form-group mb-2">
+                            <label for="lastname" class="form-label">Lastname</label>
+                            <input type="text" class="form-control" name="lastname" id="lastname">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-2">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="text" class="form-control" name="email" id="email">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-check mb-2">
+                    <input type="checkbox" name="accepted" class="form-check-input" id="save-info">
+                    <label class="form-check-label"  for="save-info">J'ai lu et accepté les conditions d'utilisation de crypto earn</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+                <a href="{% url 'login' %}" class="btn btn-secondary">Login</a>
+            </form>
+        </div>
+    </section>
+{% endblock content %}
